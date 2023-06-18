@@ -14,7 +14,6 @@ async function createWindow() {
   });
 
   ipcMain.on("load-paragraph", (event, data) => {
-    console.log("from ipcMain");
     const paragraph = getParagraph();
     event.reply(data.eventName, paragraph);
   });
