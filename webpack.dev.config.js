@@ -1,3 +1,5 @@
+const { webpack } = require("webpack");
+const WebpackDevServer = require("webpack-dev-server");
 const baseConfig = require("./webpack.config");
 // import baseConfig from "./webpack.config.js";
 
@@ -8,14 +10,18 @@ baseConfig.devServer = {
   historyApiFallback: true,
 };
 
-module.exports = baseConfig;
-// export default baseConfig;
-// const compiler = webpack(baseConfig);
-// const app = new WebpackDevServer(compiler, {
-//   contentBase: "/public/",
-//   // proxy: { "/graphql": `http://localhost:${GRAPHQL_PORT}` },
-//   publicPath: "/",
-//   stats: { colors: true },
-// });
+const compiler = webpack(baseConfig);
+const server = new WebpackDevServer(compiler, {
+  port: 3030,
+  historyApiFallback: true,
+  // contentBase: "/public/",
+  // publicPath: "/",
+  // stats: { colors: true },
+});
 
-// app.use("/", express.static(path.resolve(__dirname, "public")));
+baseConfig.runServer = async () => {
+  console.log("Starting server...");
+  await server.start();
+};
+
+module.exports = baseConfig;

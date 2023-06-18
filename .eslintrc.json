@@ -20,7 +20,7 @@
     "rules": {
         "semi": [2, "always"],
         "quotes": [2, "double", { "avoidEscape": true }],
-        "comma-dangle": ["error", "only-multiline"],
+        "comma-dangle": ["error", {"anonymous": "always", "named": "never", "asyncArrow": "always"}],
         "space-before-function-paren": ["error", "never"],
         "@typescript-eslint/semi": "off",
         "@typescript-eslint/no-non-null-assertion": "warn",
