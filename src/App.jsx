@@ -1,13 +1,17 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 
-import Paragraph from "./components/Paragraph";
+// import Paragraph from "./components/Paragraph";
+import RS from "random-words-and-sentences";
+// const RS = require("random-words-and-sentences");
 
 function App() {
   const [paragraph, setParagraph] = useState();
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [currentTypedWord, setCurrentTypedWord] = useState("");
   const [correctIndices, setCorrectIndices] = useState([]);
+  const [correctWords, setCorrectWords] = useState([]);
+  const [incorrectWords, setIncorrectWords] = useState([]);
 
   const [timer, setTimer] = useState(60);
   const [timerOn, setTimerOn] = useState(false);
@@ -38,15 +42,30 @@ function App() {
     return paragraph ? paragraph.split(" ") : [];
   }, [paragraph]);
 
+  console.log(currentWordIndex, words?.[currentWordIndex]);
   const currentWord = words?.[currentWordIndex];
 
   const incrementWordIndex = () => setCurrentWordIndex(currentWordIndex + 1);
+  const resetWordIndex = () => setCurrentWordIndex(0);
+  const resetCorrectIndices = () => setCorrectIndices([]);
 
   const handleTyping = (event) => {
+    if (!timerOn) setTimerOn(true);
     const key = event.key;
+
     if (key === " ") {
+      if (currentWordIndex === words.length - 1) {
+        setCurrentTypedWord("");
+        resetWordIndex();
+        resetCorrectIndices([]);
+        loadParagraph();
+        return;
+      }
       if (currentTypedWord === currentWord) {
         setCorrectIndices([...correctIndices, currentWordIndex]);
+        setCorrectWords([...correctWords, currentWord]);
+      } else {
+        setIncorrectWords([...incorrectWords, currentWord]);
       }
       setCurrentTypedWord("");
       incrementWordIndex();
@@ -55,13 +74,21 @@ function App() {
       chars.pop();
       setCurrentTypedWord(chars.join(""));
     } else {
-      setCurrentTypedWord(currentTypedWord + key);
+      const keys = [
+        "Shift",
+        "Alt",
+        "Ctrl",
+        "ArrowDown",
+        "ArrowUp",
+        "ArrowLeft",
+        "ArrowRight",
+      ];
+      if (!keys.includes(key)) setCurrentTypedWord(currentTypedWord + key);
     }
   };
 
   const start = () => {
-    loadParagraph?.(setParagraph);
-    setTimerOn(true);
+    loadParagraph();
   };
 
   const stop = () => {
@@ -70,13 +97,19 @@ function App() {
     setTimer(60);
     setParagraph("");
     setCurrentTypedWord("");
-    setCurrentWordIndex(0);
+    resetWordIndex();
     setCorrectIndices([]);
   };
 
   const isWordCorrect = (index) => correctIndices.includes(index);
 
-  const loadParagraph = window.electronAPI?.loadParagraph;
+  const loadParagraph = () => {
+    const sentence = RS.getRandomSentence();
+    setParagraph(sentence);
+    console.log(sentence);
+    // return "sdfsf";
+  };
+
   return (
     <Container>
       <Row>
@@ -93,10 +126,10 @@ function App() {
               md={3}
               className="my-3 mt-5 mb-0 p-0 fw-bold fs-4 text-success"
             >
-              Correct: {correctIndices.length}
+              Correct: {correctWords.length}
             </Col>
             <Col md={3} className="my-3 mt-5 mb-0 p-0 fw-bold fs-4 text-danger">
-              Incorrect: {currentWordIndex - correctIndices.length}
+              Incorrect: {incorrectWords.length}
             </Col>
             <Col md={1} className="my-3 mt-5 mb-0 p-0 fw-bold fs-4">
               {timer}
@@ -107,6 +140,7 @@ function App() {
 
       {!!words?.length && (
         <>
+          {`(currentWord: ${currentWord}, currentWordIndex: ${currentWordIndex}, words.length${words.length})`}
           <Row>
             <Col
               md={8}
@@ -115,15 +149,20 @@ function App() {
             >
               {words.map((word, index) =>
                 index === currentWordIndex ? (
-                  <strong key={index}>{word} </strong>
+                  <span
+                    key={index}
+                    className="p-1 rounded bg-secondary fw-bold text-light fs-5"
+                  >
+                    {word}{" "}
+                  </span>
                 ) : (
                   <span
                     key={index}
-                    className={`${
+                    className={`p-1 rounded fw-bold fs-5 ${
                       isWordCorrect(index)
-                        ? "text-success fw-bold"
+                        ? "text-success"
                         : index < currentWordIndex
-                        ? "text-danger fw-bold"
+                        ? "text-danger"
                         : ""
                     }`}
                   >

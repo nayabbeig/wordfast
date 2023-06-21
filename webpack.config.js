@@ -39,10 +39,10 @@ module.exports = {
         test: /\.(css)$/i,
         use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
-      {
-        test: /\.(json)$/i,
-        use: ["file-loader"],
-      },
+      // {
+      //   test: /\.(json|JSON)$/i,
+      //   use: ["file-loader"],
+      // },
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: "asset/resource",
