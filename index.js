@@ -8,10 +8,23 @@ async function createWindow() {
   const win = new BrowserWindow({
     width: 800,
     height: 600,
+    titleBarStyle: "hidden",
+    titleBarOverlay: {
+      // color of titile bar
+      color: "#191A19",
+      // color of titile bar control
+      symbolColor: "#74b1be",
+      // height of titile bar
+      height: 32,
+    },
+    frame: false,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
   });
+
+  win.setBackgroundColor("#191A19");
+  win.setMenuBarVisibility(false);
 
   ipcMain.on("load-paragraph", (event, data) => {
     const paragraph = getParagraph();
