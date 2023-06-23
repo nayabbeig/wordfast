@@ -1,10 +1,14 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
-const { runServer } = require("./webpack.dev.config");
-const { getParagraph } = require("./electronSrc/words");
+const result = require("dotenv").config();
+
+const env = result.parsed;
 
 async function createWindow() {
-  await runServer();
+  if (env?.DEVELOPMENT) {
+    const { runServer } = require("./webpack.dev.config");
+    await runServer();
+  }
   const win = new BrowserWindow({
     width: 800,
     height: 600,
@@ -19,20 +23,21 @@ async function createWindow() {
     },
     frame: false,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
+      preload: path.join("preload.js"),
+      // devTools: env?.DEVELOPMENT ? true : false,
     },
+    icon: path.resolve("./icon.ico"),
   });
 
   win.setBackgroundColor("#191A19");
   win.setMenuBarVisibility(false);
 
-  ipcMain.on("load-paragraph", (event, data) => {
-    const paragraph = getParagraph();
-    event.reply(data.eventName, paragraph);
-  });
-
   //   win.loadFile("index.html");
-  win.loadURL("http://localhost:3030");
+  if (env?.DEVELOPMENT) {
+    win.loadURL("http://localhost:3030");
+  } else {
+    win.loadFile(path.join("./build/index.html"));
+  }
 }
 
 app.whenReady().then(() => {

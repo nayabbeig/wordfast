@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import {
   MdOutlineTimer,
-  MdCheckCircle,
-  MdCancel,
+  MdCheckCircleOutline,
+  MdOutlineCancel,
   MdPlayCircleFilled,
   MdReplayCircleFilled,
 } from "react-icons/md";
@@ -55,9 +55,9 @@ function App() {
   const start = () => {
     if (intervalId) {
       finish();
-      setCorrectWords([]);
-      setIncorrectWords([]);
     }
+    setCorrectWords([]);
+    setIncorrectWords([]);
     setShowResult(false);
     setTimer(TIMER_VALUE);
     loadParagraph();
@@ -165,7 +165,7 @@ function App() {
   }, [paragraph]);
 
   return (
-    <Container>
+    <Container className="user-select-none">
       <Row className="m-3 mt-5 mb-5 p-0 mx-0">
         <Col xs={1}>
           {isTypeTestRunnig() ? (
@@ -180,29 +180,57 @@ function App() {
             <div onClick={start}>
               <MdPlayCircleFilled
                 style={{ cursor: "pointer" }}
-                color="#5D8AA8"
+                color="#0079FF"
                 size={60}
               />
             </div>
           )}
         </Col>
-        <Col xs={5} className="fs-1 fw-bolder">
+        <Col xs={3} className="fs-1 fw-bolder px-5 text-light">
           <i>WordFast</i>
         </Col>
-        <Col xs={6} className="d-flex justify-content-end">
-          <div className="mx-4 fw-bold fs-4 text-success  d-flex align-items-center">
-            <MdCheckCircle size={60} /> {correctWords.length}
-          </div>
-          <div className="mx-4 fw-bold fs-4 text-danger  d-flex align-items-center">
-            <MdCancel size={60} /> {incorrectWords.length}
+        <Col xs={8} className="d-flex justify-content-end align-items-center">
+          <div
+            style={{
+              height: "40px",
+              borderRadius: "50px",
+              color: "#C6DA20",
+              borderColor: "#C6DA20",
+              border: "2px solid",
+              width: "100px",
+            }}
+            className="mx-3 fw-bold fs-4 d-flex align-items-center p-1"
+          >
+            <MdCheckCircleOutline size={30} />
+            <span className="p-3">{correctWords.length}</span>
           </div>
           <div
-            className={`fw-bold fs-4 d-flex align-items-center ${
-              timer < 10 ? "text-warning" : "text-light"
-            }`}
+            style={{
+              height: "40px",
+              borderRadius: "50px",
+              color: "#DA1212",
+              borderColor: "#DA1212",
+              border: "2px solid",
+              width: "100px",
+            }}
+            className="mx-3 fw-bold fs-4 d-flex align-items-center p-1"
           >
-            <MdOutlineTimer size={60} />
-            {timer}
+            <MdOutlineCancel size={30} />
+            <span className="p-3">{incorrectWords.length}</span>
+          </div>
+          <div
+            style={{
+              height: "40px",
+              borderRadius: "50px",
+              color: "#FFB03B",
+              borderColor: "#FFB03B",
+              border: "2px solid",
+              width: "100px",
+            }}
+            className="mx-3 fw-bold fs-4 d-flex align-items-center p-1"
+          >
+            <MdOutlineTimer size={30} />
+            <span className="p-3">{timer}</span>
           </div>
         </Col>
       </Row>
