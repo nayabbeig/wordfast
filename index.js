@@ -23,10 +23,10 @@ async function createWindow() {
     },
     frame: false,
     webPreferences: {
-      preload: path.join("preload.js"),
-      // devTools: env?.DEVELOPMENT ? true : false,
+      preload: "preload.js",
+      devTools: env?.DEVELOPMENT ? true : false,
     },
-    icon: path.resolve("./icon.ico"),
+    icon: "icon.ico",
   });
 
   win.setBackgroundColor("#191A19");
@@ -36,7 +36,7 @@ async function createWindow() {
   if (env?.DEVELOPMENT) {
     win.loadURL("http://localhost:3030");
   } else {
-    win.loadFile(path.join("./build/index.html"));
+    win.loadFile("index.html");
   }
 }
 
